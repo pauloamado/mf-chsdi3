@@ -378,7 +378,6 @@ def _get_feature_db(featureId, params, models, process=True):
         raise exc.HTTPNotFound('No feature with id %s' % featureId)
     if process:
         feature = _process_feature(feature, params)
-        feature = {'feature': feature}
     return feature, vector_model
 
 

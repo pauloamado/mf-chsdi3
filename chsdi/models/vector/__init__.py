@@ -117,6 +117,7 @@ class Vector(object):
             id, geom, properties, bbox = self.__read__()
             return geojson.Feature(id=id,
                                    featureId=id,  # Duplicate id for backward compat...
+                                   type="Feature",
                                    geometry=geom,
                                    properties=properties,
                                    bbox=bbox,
