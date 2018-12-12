@@ -11,6 +11,21 @@ from chsdi.models.vector import Vector, Geometry2D
 Base = bases['bafu']
 
 
+class SchutzgebieteBiosphaerenreservate(Base, Vector):
+    __tablename__ = 'biosphaeren'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __bodId__ = 'ch.bafu.schutzgebiete-biosphaerenreservate'
+    __template__ = 'templates/htmlpopup/biosphaerenreservate.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    name = Column('name', Unicode)
+    objnummer = Column('objnummer', Integer)
+    version = Column('version', Unicode)
+    shape_area_ha = Column('shape_area_ha', Float)
+    the_geom = Column(Geometry2D)
+
+register('ch.bafu.schutzgebiete-biosphaerenreservate', SchutzgebieteBiosphaerenreservate)
+
+
 class AlpweidenHerdenschutzhunde(Base, Vector):
     __tablename__ = 'alpenweiden_herdenschutzhunde'
     __table_args__ = ({'schema': 'fauna', 'autoload': False})
