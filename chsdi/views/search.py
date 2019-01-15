@@ -88,8 +88,7 @@ class Search(SearchValidation):
         # Only include results with a certain weight. This might need tweaking
         self.sphinx.SetFilterRange('@weight', 5000, 2 ** 32 - 1)
         try:
-            if self.typeInfo in ('locations', 'locations_preview'):
-                temp = self.sphinx.Query(searchTextFinal, index='swisssearch_fuzzy')
+            temp = self.sphinx.Query(searchTextFinal, index='swisssearch_fuzzy')
         except IOError:  # pragma: no cover
             raise exc.HTTPGatewayTimeout()
         temp = temp['matches'] if temp is not None else temp
@@ -131,14 +130,32 @@ class Search(SearchValidation):
 
         if len(searchList) != 0:
             try:
-                if self.typeInfo == 'locations_preview':
-                    temp = self.sphinx.Query(searchTextFinal, index='swisssearch_preview')
-                else:
-                    temp = self.sphinx.Query(searchTextFinal, index='swisssearch')
+                # wildcard search
+                self.sphinx.AddQuery(searchTextFinal, index='swisssearch')
+                # exact search
+                self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_PROXIMITY_BM25)
+                self.sphinx.SetGroupBy('origin', sphinxapi.SPH_GROUPBY_ATTR, 'rank ASC, @weight DESC, num ASC')
+                searchText = '@detail ^%s' % ' '.join(self.searchText)
+                self.sphinx.AddQuery(searchText, index='swisssearch')
+                self.sphinx.ResetGroupBy()
+
+                temp = self.sphinx.RunQueries()
 
             except IOError:  # pragma: no cover
                 raise exc.HTTPGatewayTimeout()
-            temp = temp['matches'] if temp is not None else temp
+
+            temp_merged = temp[1]['matches'] + temp[0]['matches'] if len(temp) == 2 else temp['matches']
+
+            # remove duplicate results, exact search results have priority over wildcard search results
+            temp = []
+            seen = []
+            for d in temp_merged:
+                if d['id'] not in seen:
+                    temp.append(d)
+                    seen.append(d['id'])
+
+            # reduce number of elements in result to limit
+            temp = temp[:limit]
 
             # if standard index did not find anything, use soundex/metaphon indices
             # which should be more fuzzy in its results
@@ -146,7 +163,6 @@ class Search(SearchValidation):
                 temp = self._fuzzy_search(searchTextFinal)
         else:
             temp = []
-
         if temp is not None and len(temp) != 0:
             self._parse_location_results(temp)
 
