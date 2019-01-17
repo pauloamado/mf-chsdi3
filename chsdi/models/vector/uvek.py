@@ -3316,7 +3316,7 @@ register('ch.bazl.spitallandeplaetze', Spitallandeplaetze)
 
 
 class Bikesharing:
-    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __table_args__ = ({'schema': 'bfe', 'autoload': False, 'extend_existing': True})
     __template__ = 'templates/htmlpopup/bikesharing.mako'
     __bodId__ = 'ch.bfe.bikesharing'
     id = Column('bgdi_id', Integer, primary_key=True)
