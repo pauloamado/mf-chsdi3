@@ -112,7 +112,8 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-  'sticky_navigation' : True
+  'sticky_navigation' : True,
+  'logo_only': False
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
