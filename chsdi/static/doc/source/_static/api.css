@@ -1,2 +1,4 @@
 @import url("https://geoadmin.readthedocs.io/en/latest/_static/css/theme.css");
 input {display:none !important;}
+.rst-versions .rst-current-version {display: none !important;}
+.version {display: none !important;}
