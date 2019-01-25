@@ -106,7 +106,7 @@ mathjax_path = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config
 html_theme = 'sphinx_rtd_theme'
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
-#html_style = 'api.css'
+html_style = 'api.css'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
